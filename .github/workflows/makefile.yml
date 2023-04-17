@@ -1,0 +1,25 @@
+name: Build, Test and Create NATaaS VPP plugin
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Run the build in the container
+      run: |
+        docker buildx build -f Dockerfile --output . .
+    - name: Look at what is here
+      run: |
+        ls -la
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: fateshare package
+        path: fateshare*.deb
