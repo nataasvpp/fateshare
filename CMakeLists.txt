@@ -1,0 +1,55 @@
+# Copyright (c) 2023 Cisco and/or its affiliates.
+
+cmake_minimum_required(VERSION 3.9)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
+#Required for VAPI header generation
+
+project(fateshare)
+
+if(NOT DEFINED CMAKE_INSTALL_LIBDIR AND EXISTS "/etc/debian_version")
+  set(CMAKE_INSTALL_LIBDIR "lib/${CMAKE_LIBRARY_ARCHITECTURE}")
+endif()
+set(VPP_BINARY_DIR ${CMAKE_BINARY_DIR}/CMakeFiles)
+set(VPP_LIBRARY_DIR ${CMAKE_INSTALL_LIBDIR} CACHE STRING "Relative library directory path")
+set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
+find_package(VPP)
+
+##############################################################################
+# sanitizers
+##############################################################################
+
+option(VCDP_SANITIZE_ADDR "Enable Address Sanitizer" OFF)
+set(VCDP_SANITIZE_ADDR_OPTIONS
+  "unmap_shadow_on_exit=1:disable_coredump=0:abort_on_error=1:detect_leaks=0"
+  CACHE
+  STRING "Address sanitizer arguments"
+)
+add_compile_options(-Werror -Wall)
+
+if (VCDP_SANITIZE_ADDR)
+  add_compile_options(-fsanitize=address -fsanitize=undefined)
+  add_compile_definitions(CLIB_SANITIZE_ADDR)
+  set(CMAKE_EXE_LINKER_FLAGS "-fsanitize=address ${CMAKE_EXE_LINKER_FLAGS}")
+  set(CMAKE_SHARED_LINKER_FLAGS "-fsanitize=address ${CMAKE_SHARED_LINKER_FLAGS}")
+endif (VCDP_SANITIZE_ADDR)
+
+include(CTest)
+
+add_subdirectory(fateshare)
+
+set(CPACK_PACKAGE_NAME "fateshare")
+set(CPACK_PACKAGE_VENDOR "Cisco Systems Inc")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY
+	"NATaaS/VPP Plugin")
+set(CPACK_PACKAGE_VERSION "1.0.0")
+set(CPACK_PACKAGE_VERSION_MAJOR "1")
+set(CPACK_PACKAGE_VERSION_MINOR "0")
+set(CPACK_PACKAGE_VERSION_PATCH "0")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "CPack Component Example")
+set(CPACK_PACKAGE_CONTACT "otroan@employees.org")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Ole Troan")
+include(CPack)
+#include (Packing.cmake)
