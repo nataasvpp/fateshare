@@ -15,5 +15,5 @@ RUN make pkg-deb-debug
 RUN make pkg-deb
 
 FROM scratch as artifact
-COPY --from=build /build/_build/debug/fateshare.deb /fateshare-debug-1.0.0.deb
+COPY --from=build /build/_build/debug/fateshare-1.0.0-Linux.deb /fateshare-debug-1.0.0.deb
 COPY --from=build /build/_build/release/fateshare-1.0.0-Linux.deb /fateshare-1.0.0.deb
