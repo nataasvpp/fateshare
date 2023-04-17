@@ -26,3 +26,4 @@ add_executable(vpp_fateshare_monitor
   vpp_fateshare_monitor.c
 )
 target_link_libraries(vpp_fateshare_monitor ${VPPINFRA_LIBRARY} ${VLIB_LIBRARY})
+install(TARGETS vpp_fateshare_monitor RUNTIME DESTINATION bin)
