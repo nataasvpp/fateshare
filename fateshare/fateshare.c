@@ -28,6 +28,8 @@
 #include <sys/prctl.h> // prctl(), PR_SET_PDEATHSIG
 #include <limits.h>
 
+#include <vpp/app/version.h>
+
 fateshare_main_t fateshare_main;
 
 /* Action function shared between message handler and debug CLI */
@@ -270,11 +272,11 @@ VLIB_CLI_COMMAND (fateshare_restart_process_command, static) = {
   .function = fateshare_send_hup_fn,
 };
 
-VLIB_PLUGIN_REGISTER () = {
-  .version = "1.0",
+VLIB_PLUGIN_REGISTER() = {
+  .version = VPP_BUILD_VER,
+  .version_required = VPP_BUILD_VER,
   .description = "Run child processes which will share fate with VPP, restart "
 		 "them if they quit",
-  .default_disabled = 1,
 };
 
 /*
